@@ -16,26 +16,26 @@ logger = logging.getLogger(__name__)
 
 
 class ScenarioGenerator:
-    """Genera escenarios Gherkin utilizando IA"""
+    """Generates Gherkin scenarios using AI"""
     
     def __init__(self, resource_manager: ResourceManager):
         self.settings = get_settings()
         self.resource_manager = resource_manager
     
     def extract_think_tags(self, text: str) -> List[str]:
-        """Extrae y devuelve una lista con el contenido entre etiquetas <think> y </think>"""
+        """Extracts and returns a list with content between <think> and </think> tags"""
         matches = re.findall(r'<think>(.*?)</think>', text, flags=re.DOTALL)
         return [match.strip() for match in matches]
     
     def remove_think_tags(self, text: str) -> str:
-        """Elimina el contenido entre etiquetas <think> y </think>, incluyendo las propias etiquetas"""
+        """Removes content between <think> and </think> tags, including the tags themselves"""
         cleaned_text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
         return cleaned_text.strip()
     
     def identify_api_component(self, user_story: str) -> str:
         """
-        Identifica a qué componente API está relacionada la historia de usuario.
-        Retorna: 'user-service', 'order-service', 'payment-service', o 'notification-service'
+        Identifies which API component the user story is related to.
+        Returns: 'user-service', 'order-service', 'payment-service', or 'notification-service'
         """
         story_lower = user_story.lower()
         
@@ -55,8 +55,8 @@ class ScenarioGenerator:
     
     def get_component_context(self, component: str) -> str:
         """
-        Retorna información de contexto específica para el componente identificado,
-        incluyendo información relevante del esquema OpenAPI si está disponible.
+        Returns specific context information for the identified component,
+        including relevant OpenAPI schema information if available.
         """
         contexts = {
             "user-service": (
@@ -78,14 +78,14 @@ class ScenarioGenerator:
             )
         }
         
-        # Añadir información de OpenAPI si está disponible
+        # Add OpenAPI information if available
         api_context = ""
         if component == "user-service":
             schema = self.resource_manager.get_openapi_user_service_schema()
             if schema:
                 paths = schema.get("paths", {})
                 api_context = "\nKey endpoints:\n"
-                for path, operations in list(paths.items())[:5]:  # Limitar a 5 endpoints
+                for path, operations in list(paths.items())[:5]:  # Limit to 5 endpoints
                     api_context += f"- {path}: "
                     methods = [m.upper() for m in operations.keys() if m in ["get", "post", "put", "delete"]]
                     api_context += f"{', '.join(methods)}\n"
@@ -95,7 +95,7 @@ class ScenarioGenerator:
             if schema:
                 paths = schema.get("paths", {})
                 api_context = "\nKey endpoints:\n"
-                for path, operations in list(paths.items())[:5]:  # Limitar a 5 endpoints
+                for path, operations in list(paths.items())[:5]:  # Limit to 5 endpoints
                     api_context += f"- {path}: "
                     methods = [m.upper() for m in operations.keys() if m in ["get", "post", "put", "delete"]]
                     api_context += f"{', '.join(methods)}\n"
@@ -104,8 +104,8 @@ class ScenarioGenerator:
     
     def get_relevant_examples(self, task_description: str, examples_text: str) -> str:
         """
-        Selecciona 1-2 ejemplos relevantes basados en palabras clave en la descripción de la tarea,
-        teniendo en cuenta tanto el tipo de operación como el componente.
+        Selects 1-2 relevant examples based on keywords in the task description,
+        considering both operation type and component.
         """
         # Component keywords
         components = {
@@ -185,23 +185,23 @@ class ScenarioGenerator:
     
     @staticmethod
     def cache_result(func):
-        """Decorator para implementar caché de escenarios generados"""
+        """Decorator to implement caching of generated scenarios"""
         @functools.wraps(func)
         def wrapper(self, user_story):
-            # Generar un ID único basado en el contenido de la historia de usuario
+            # Generate a unique ID based on user story content
             cache_id = str(hash(user_story))
             cache_file = os.path.join(self.settings.cache_dir, f"{cache_id}.txt")
             
-            # Comprobar si ya existe en caché
+            # Check if already exists in cache
             if os.path.exists(cache_file):
                 with open(cache_file, 'r', encoding='utf-8') as f:
                     logger.info(f"[CACHE HIT] Using cached scenario for: {user_story[:30]}...")
                     return f.read()
             
-            # Generar nuevo escenario
+            # Generate new scenario
             result = func(self, user_story)
             
-            # Guardar en caché
+            # Save to cache
             with open(cache_file, 'w', encoding='utf-8') as f:
                 f.write(result)
             
@@ -211,8 +211,8 @@ class ScenarioGenerator:
     @cache_result
     def generate_gherkin(self, user_story: str) -> str:
         """
-        Genera un escenario Gherkin único utilizando el modelo de IA configurado a través de Ollama.
-        El prompt está optimizado para APIs REST genéricas y microservicios.
+        Generates a unique Gherkin scenario using the configured AI model through Ollama.
+        The prompt is optimized for generic REST APIs and microservices.
         """
         # Identify the component based on the user story
         component = self.identify_api_component(user_story)

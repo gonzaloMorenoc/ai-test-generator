@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagrama de Flujo - Generación de Tests</title>
+    <title>Flow Diagram - Test Generation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -162,18 +162,18 @@
     </style>
 </head>
 <body>
-    <h1>Diagrama de Flujo del Proceso de Generación de Tests</h1>
+    <h1>Test Generation Process Flow Diagram</h1>
     
     <div class="diagram-container">
-        <h2>Clases principales</h2>
+        <h2>Main Classes</h2>
         <div class="classes-container flex-row">
             <div class="class-box resource-manager">
                 <div class="class-title">ResourceManager</div>
                 <div class="class-description">
-                    <p>Gestiona la carga de recursos externos como ejemplos de Gherkin y esquemas OpenAPI.</p>
+                    <p>Manages loading of external resources like Gherkin examples and OpenAPI schemas.</p>
                     <ul>
-                        <li>Carga de ejemplos Gherkin</li>
-                        <li>Carga de esquemas JSON/YAML</li>
+                        <li>Loading Gherkin examples</li>
+                        <li>Loading JSON/YAML schemas</li>
                     </ul>
                 </div>
             </div>
@@ -181,11 +181,11 @@
             <div class="class-box jira-client">
                 <div class="class-title">JiraClient</div>
                 <div class="class-description">
-                    <p>Cliente para interactuar con la API de Jira.</p>
+                    <p>Client for interacting with Jira API.</p>
                     <ul>
-                        <li>Obtención de tareas</li>
-                        <li>Vinculación de tests a tareas</li>
-                        <li>Gestión de autenticación</li>
+                        <li>Task retrieval</li>
+                        <li>Linking tests to tasks</li>
+                        <li>Authentication management</li>
                     </ul>
                 </div>
             </div>
@@ -193,11 +193,11 @@
             <div class="class-box xray-client">
                 <div class="class-title">XrayClient</div>
                 <div class="class-description">
-                    <p>Cliente para interactuar con la API de Xray.</p>
+                    <p>Client for interacting with Xray API.</p>
                     <ul>
-                        <li>Creación de tests</li>
-                        <li>Monitorización de jobs</li>
-                        <li>Gestión de tokens</li>
+                        <li>Test creation</li>
+                        <li>Job monitoring</li>
+                        <li>Token management</li>
                     </ul>
                 </div>
             </div>
@@ -205,11 +205,11 @@
             <div class="class-box scenario-generator">
                 <div class="class-title">ScenarioGenerator</div>
                 <div class="class-description">
-                    <p>Genera escenarios Gherkin utilizando IA.</p>
+                    <p>Generates Gherkin scenarios using AI.</p>
                     <ul>
-                        <li>Identificación de componentes</li>
-                        <li>Selección de ejemplos relevantes</li>
-                        <li>Generación con IA en Ollama</li>
+                        <li>Component identification</li>
+                        <li>Relevant example selection</li>
+                        <li>AI generation using Ollama</li>
                     </ul>
                 </div>
             </div>
@@ -217,12 +217,12 @@
             <div class="class-box tests-generator">
                 <div class="class-title">TestsGenerator</div>
                 <div class="class-description">
-                    <p>Clase principal que coordina el proceso completo.</p>
+                    <p>Main class that coordinates the complete process.</p>
                     <ul>
-                        <li>Orquestación del flujo completo</li>
-                        <li>Procesamiento en paralelo</li>
-                        <li>Gestión de errores</li>
-                        <li>Log con resultados</li>
+                        <li>Complete flow orchestration</li>
+                        <li>Parallel processing</li>
+                        <li>Error management</li>
+                        <li>Results logging</li>
                     </ul>
                 </div>
             </div>
@@ -233,12 +233,12 @@
             <div class="class-label tests-generator">TestsGenerator</div>
             <div class="node-title">
                 <span class="icon" style="background-color: #4CAF50;">✓</span>
-                Inicio
+                Start
             </div>
-            Inicio del script (función main → TestsGenerator.run())
+            Script start (main function → TestsGenerator.run())
         </div>
         
-        <div class="arrow">Inicialización</div>
+        <div class="arrow">Initialization</div>
         
         <!-- Inicialización y Carga -->
         <div class="flex-row">
@@ -246,11 +246,11 @@
                 <div class="class-label resource-manager">ResourceManager</div>
                 <div class="node-title">
                     <span class="icon" style="background-color: #607D8B;">⚙</span>
-                    Carga de Recursos
+                    Resource Loading
                 </div>
                 <ul>
-                    <li>Carga ejemplos Gherkin (load_gherkin_examples)</li>
-                    <li>Carga schemas OpenAPI (get_openapi_*_schema)</li>
+                    <li>Load Gherkin examples (load_gherkin_examples)</li>
+                    <li>Load OpenAPI schemas (get_openapi_*_schema)</li>
                 </ul>
             </div>
             
@@ -258,66 +258,66 @@
                 <div class="class-label tests-generator">TestsGenerator</div>
                 <div class="node-title">
                     <span class="icon" style="background-color: #607D8B;">⚡</span>
-                    Inicialización de Clientes
+                    Client Initialization
                 </div>
                 <ul>
-                    <li>Inicialización de JiraClient</li>
-                    <li>Inicialización de XrayClient</li>
-                    <li>Inicialización de ScenarioGenerator</li>
+                    <li>JiraClient initialization</li>
+                    <li>XrayClient initialization</li>
+                    <li>ScenarioGenerator initialization</li>
                 </ul>
             </div>
         </div>
         
-        <div class="arrow">Obtención de tareas</div>
+        <div class="arrow">Task retrieval</div>
         
         <!-- Obtención de Tareas -->
         <div class="node task-node">
             <div class="class-label jira-client">JiraClient</div>
             <div class="node-title">
                 <span class="icon" style="background-color: #FF9800;">📋</span>
-                Obtención de Tareas
+                Task Retrieval
             </div>
             <ul>
-                <li>Método JiraClient.get_sprint_tasks()</li>
-                <li>Consulta a Jira vía API usando JQL</li>
+                <li>JiraClient.get_sprint_tasks() method</li>
+                <li>Jira query via API using JQL</li>
                 <li>project = "LOM" AND Sprint in openSprints() AND labels = "taskWithCucumberTests"</li>
             </ul>
         </div>
         
-        <div class="arrow">Lista de tareas</div>
+        <div class="arrow">Task list</div>
         
         <!-- Generación de Escenarios -->
         <div class="flow-section process-section">
-            <div class="flow-section-title">Generación de Escenarios Gherkin (_generate_scenarios)</div>
+            <div class="flow-section-title">Gherkin Scenario Generation (_generate_scenarios)</div>
             
             <div class="node" style="border-color: #3F51B5;">
                 <div class="class-label tests-generator">TestsGenerator</div>
                 <div class="node-title">
                     <span class="icon" style="background-color: #3F51B5;">🔄</span>
-                    Procesamiento Paralelo
+                    Parallel Processing
                 </div>
                 <ul>
-                    <li>ThreadPoolExecutor con workers configurables</li>
-                    <li>Distribución de tareas para procesamiento</li>
+                    <li>ThreadPoolExecutor with configurable workers</li>
+                    <li>Task distribution for processing</li>
                 </ul>
             </div>
             
-            <div class="arrow">Para cada tarea</div>
+            <div class="arrow">For each task</div>
             
             <div class="sub-process">
-                <div class="sub-process-title">Proceso por cada tarea</div>
+                <div class="sub-process-title">Process for each task</div>
                 
                 <div class="flex-row">
                     <div class="node component-node" style="width: 45%;">
                         <div class="class-label scenario-generator">ScenarioGenerator</div>
                         <div class="node-title">
                             <span class="icon" style="background-color: #9C27B0;">🏷️</span>
-                            Identificación de Componente
+                            Component Identification
                         </div>
                         <ul>
-                            <li>Método identify_component()</li>
-                            <li>Detección: lookup-rest-api, serrea, lomana, mason</li>
-                            <li>Análisis de palabras clave en descripción</li>
+                            <li>identify_component() method</li>
+                            <li>Detection: lookup-rest-api, serrea, lomana, mason</li>
+                            <li>Keyword analysis in description</li>
                         </ul>
                     </div>
                     
@@ -325,12 +325,12 @@
                         <div class="class-label scenario-generator">ScenarioGenerator</div>
                         <div class="node-title">
                             <span class="icon" style="background-color: #9C27B0;">📄</span>
-                            Selección de Ejemplos
+                            Example Selection
                         </div>
                         <ul>
-                            <li>Método get_relevant_examples()</li>
-                            <li>Selección basada en componente</li>
-                            <li>Uso de ejemplos de ResourceManager</li>
+                            <li>get_relevant_examples() method</li>
+                            <li>Component-based selection</li>
+                            <li>Using examples from ResourceManager</li>
                         </ul>
                     </div>
                 </div>
@@ -341,95 +341,95 @@
                     <div class="class-label scenario-generator">ScenarioGenerator</div>
                     <div class="node-title">
                         <span class="icon" style="background-color: #E91E63;">🧠</span>
-                        Generación con IA
+                        AI Generation
                     </div>
                     <ul>
-                        <li>Método generate_gherkin()</li>
-                        <li>Preparación del prompt con contexto y ejemplos</li>
-                        <li>Llamada a Ollama con modelo IA</li>
-                        <li>Procesamiento y limpieza de respuesta</li>
+                        <li>generate_gherkin() method</li>
+                        <li>Prompt preparation with context and examples</li>
+                        <li>Ollama call with AI model</li>
+                        <li>Response processing and cleaning</li>
                     </ul>
                 </div>
             </div>
             
-            <div class="arrow">Escenarios generados</div>
+            <div class="arrow">Generated scenarios</div>
         </div>
         
         <!-- Creación y Vinculación de Tests -->
         <div class="flow-section integration-section">
-            <div class="flow-section-title">Creación y Vinculación de Tests (_process_xray_tests)</div>
+            <div class="flow-section-title">Test Creation and Linking (_process_xray_tests)</div>
             
             <div class="node" style="border-color: #FF5722;">
                 <div class="class-label tests-generator">TestsGenerator</div>
                 <div class="node-title">
                     <span class="icon" style="background-color: #FF5722;">📦</span>
-                    Procesamiento en Lotes
+                    Batch Processing
                 </div>
                 <ul>
-                    <li>División en lotes (BATCH_SIZE configurable)</li>
-                    <li>Gestión de reintentos y fallos</li>
-                    <li>Pausas entre lotes para rate-limits</li>
+                    <li>Batch division (configurable BATCH_SIZE)</li>
+                    <li>Retry and failure management</li>
+                    <li>Pauses between batches for rate-limits</li>
                 </ul>
             </div>
             
-            <div class="arrow">Para cada lote</div>
+            <div class="arrow">For each batch</div>
             
             <div class="flex-row">
                 <div class="sub-process" style="width: 45%;">
-                    <div class="sub-process-title">Creación Tests en Xray</div>
+                    <div class="sub-process-title">Test Creation in Xray</div>
                     <div class="node integration-sub">
                         <div class="class-label xray-client">XrayClient</div>
                         <div class="node-title">
                             <span class="icon" style="background-color: #FF9800;">📝</span>
-                            Creación Test en Xray
+                            Xray Test Creation
                         </div>
                         <ul>
-                            <li>Método XrayClient.create_test()</li>
-                            <li>Monitoreo del estado del Job</li>
-                            <li>Reintentos automáticos si falla</li>
+                            <li>XrayClient.create_test() method</li>
+                            <li>Job status monitoring</li>
+                            <li>Automatic retries if it fails</li>
                         </ul>
                     </div>
                 </div>
                 
                 <div class="sub-process" style="width: 45%;">
-                    <div class="sub-process-title">Vinculación Tests con Tareas</div>
+                    <div class="sub-process-title">Test Linking with Tasks</div>
                     <div class="node integration-sub">
                         <div class="class-label jira-client">JiraClient</div>
                         <div class="node-title">
                             <span class="icon" style="background-color: #FF9800;">🔗</span>
-                            Vinculación en Jira
+                            Jira Linking
                         </div>
                         <ul>
-                            <li>Método JiraClient.link_test_to_task()</li>
-                            <li>Creación de enlaces "Test" en Jira</li>
-                            <li>Reintentos automáticos si falla</li>
-                            <li>Gestión de errores por rate limits</li>
+                            <li>JiraClient.link_test_to_task() method</li>
+                            <li>Creation of "Test" links in Jira</li>
+                            <li>Automatic retries if it fails</li>
+                            <li>Rate limit error management</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="arrow">Final del proceso</div>
+        <div class="arrow">End of process</div>
         
         <!-- Resumen de Ejecución -->
         <div class="node start-node">
             <div class="class-label tests-generator">TestsGenerator</div>
             <div class="node-title">
                 <span class="icon" style="background-color: #4CAF50;">📊</span>
-                Resumen de Ejecución
+                Execution Summary
             </div>
             <ul>
-                <li>Método _show_summary()</li>
-                <li>Cálculo de tiempo total de ejecución</li>
-                <li>Conteo de solicitudes realizadas a Jira</li>
-                <li>Estadísticas de éxitos/fallos</li>
+                <li>_show_summary() method</li>
+                <li>Total execution time calculation</li>
+                <li>Count of requests made to Jira</li>
+                <li>Success/failure statistics</li>
             </ul>
         </div>
         
         <!-- Leyenda -->
         <div class="legend">
-            <h3>Leyenda:</h3>
+            <h3>Legend:</h3>
             <div style="margin-bottom: 10px;">
                 <div class="legend-item">
                     <div class="legend-color" style="background-color: #2196F3;"></div>
@@ -456,15 +456,15 @@
             <div>
                 <div class="legend-item">
                     <div class="legend-color" style="background-color: #3F51B5;"></div>
-                    <span>Procesamiento Paralelo</span>
+                    <span>Parallel Processing</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background-color: #673AB7;"></div>
-                    <span>Integración con APIs</span>
+                    <span>API Integration</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background-color: #607D8B;"></div>
-                    <span>Configuración y Recursos</span>
+                    <span>Configuration and Resources</span>
                 </div>
             </div>
         </div>
