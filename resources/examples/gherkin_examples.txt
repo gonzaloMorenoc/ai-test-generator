@@ -1,0 +1,175 @@
+@TEST_DEMO-001
+Scenario: @test=DEMO-001 Create new user account
+Given a valid user registration payload:
+"""
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "username": "johndoe123",
+  "password": "SecurePass123!"
+}
+"""
+And the email "john.doe@example.com" is not already registered
+When a POST request is sent to "/api/users"
+Then http status matches 201
+And json path "id" exists and save with key "user_id"
+And json path "name" matches string "John Doe"
+And json path "email" matches string "john.doe@example.com"
+And json path "status" matches string "active"
+And json path "created_at" exists
+
+@TEST_DEMO-002
+Scenario: @test=DEMO-002 Authenticate user with valid credentials
+Given a registered user with email "john.doe@example.com"
+And valid credentials:
+"""
+{
+  "email": "john.doe@example.com",
+  "password": "SecurePass123!"
+}
+"""
+When a POST request is sent to "/api/auth/login"
+Then http status matches 200
+And json path "access_token" exists and save with key "auth_token"
+And json path "user.id" exists
+And json path "user.email" matches string "john.doe@example.com"
+And json path "expires_in" exists
+
+@TEST_DEMO-003
+Scenario: @test=DEMO-003 Create new product order
+Given an authenticated user with token "{auth_token}"
+And a valid order payload:
+"""
+{
+  "items": [
+    {
+      "product_id": "PROD-001",
+      "quantity": 2,
+      "unit_price": 29.99
+    }
+  ],
+  "shipping_address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "zip": "10001"
+  }
+}
+"""
+When a POST request is sent to "/api/orders"
+Then http status matches 201
+And json path "order_id" exists and save with key "order_id"
+And json path "status" matches string "pending"
+And json path "total_amount" matches number 59.98
+And json path "items[0].product_id" matches string "PROD-001"
+
+@TEST_DEMO-004
+Scenario: @test=DEMO-004 Get user profile by ID
+Given an authenticated user with token "{auth_token}"
+And user ID "{user_id}" exists
+When a GET request is sent to "/api/users/{user_id}"
+Then http status matches 200
+And json path "id" matches string "{user_id}"
+And json path "name" exists
+And json path "email" exists
+And json path "profile.created_at" exists
+
+@TEST_DEMO-005
+Scenario: @test=DEMO-005 Update user profile information
+Given an authenticated user with token "{auth_token}"
+And user ID "{user_id}" exists
+And updated profile data:
+"""
+{
+  "name": "John Smith",
+  "phone": "+1-555-0123",
+  "bio": "Software Developer"
+}
+"""
+When a PUT request is sent to "/api/users/{user_id}"
+Then http status matches 200
+And json path "name" matches string "John Smith"
+And json path "phone" matches string "+1-555-0123"
+And json path "bio" matches string "Software Developer"
+And json path "updated_at" exists
+
+@TEST_DEMO-006
+Scenario: @test=DEMO-006 Process payment for order
+Given an order with ID "{order_id}" in status "pending"
+And valid payment information:
+"""
+{
+  "payment_method": "credit_card",
+  "card_number": "4111111111111111",
+  "expiry_date": "12/25",
+  "cvv": "123",
+  "cardholder_name": "John Doe"
+}
+"""
+When a POST request is sent to "/api/payments"
+Then http status matches 200
+And json path "payment_id" exists and save with key "payment_id"
+And json path "status" matches string "completed"
+And json path "transaction_id" exists
+And verify order status is updated to "paid"
+
+@TEST_DEMO-007
+Scenario: @test=DEMO-007 Send email notification
+Given a user with email "john.doe@example.com"
+And email template "welcome_email"
+And notification payload:
+"""
+{
+  "to": "john.doe@example.com",
+  "template": "welcome_email",
+  "variables": {
+    "user_name": "John Doe",
+    "activation_link": "https://example.com/activate/abc123"
+  }
+}
+"""
+When a POST request is sent to "/api/notifications/email"
+Then http status matches 202
+And json path "notification_id" exists
+And json path "status" matches string "queued"
+And json path "delivery_time" exists
+
+@TEST_DEMO-008
+Scenario: @test=DEMO-008 Search products with filters
+Given multiple products exist in the catalog
+And search filters:
+"""
+{
+  "category": "electronics",
+  "price_min": 50,
+  "price_max": 500,
+  "in_stock": true
+}
+"""
+When a GET request is sent to "/api/products/search"
+Then http status matches 200
+And json path "products" is an array
+And json path "total_count" exists
+And json path "products[0].category" matches string "electronics"
+And json path "products[0].price" is between 50 and 500
+And json path "products[0].in_stock" matches boolean true
+
+@TEST_DEMO-009
+Scenario: @test=DEMO-009 Delete user account
+Given an authenticated user with token "{auth_token}"
+And user ID "{user_id}" exists
+When a DELETE request is sent to "/api/users/{user_id}"
+Then http status matches 204
+And verify user account is deactivated
+And verify user cannot authenticate with previous credentials
+
+@TEST_DEMO-010
+Scenario: @test=DEMO-010 Get order history for user
+Given an authenticated user with token "{auth_token}"
+And user has placed multiple orders
+When a GET request is sent to "/api/users/{user_id}/orders"
+Then http status matches 200
+And json path "orders" is an array
+And json path "orders[0].order_id" exists
+And json path "orders[0].status" exists
+And json path "orders[0].created_at" exists
+And json path "pagination.total_count" exists

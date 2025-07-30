@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Flujo - Generación de Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .diagram-container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .node {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px auto;
+            max-width: 400px;
+            position: relative;
+        }
+        .node-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 50%;
+            color: white;
+        }
+        .arrow {
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+            color: #666;
+            font-size: 14px;
+        }
+        .arrow::after {
+            content: "↓";
+            display: block;
+            font-size: 24px;
+            margin-top: 5px;
+        }
+        .flow-section {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .flow-section-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .sub-process {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 5px;
+        }
+        .sub-process-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        ul {
+            padding-left: 20px;
+            margin: 5px 0;
+        }
+        li {
+            margin-bottom: 3px;
+        }
+        .legend {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+        .class-label {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background-color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid;
+        }
+        .classes-container {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .class-box {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 5px;
+            width: calc(20% - 20px);
+            min-width: 180px;
+        }
+        .class-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .class-description {
+            font-size: 12px;
+        }
+
+        /* Colores específicos */
+        .start-node { border-color: #4CAF50; }
+        .config-node { border-color: #607D8B; }
+        .task-node { border-color: #FF9800; }
+        .process-section { border-color: #3F51B5; }
+        .component-node { border-color: #9C27B0; }
+        .ai-node { border-color: #E91E63; }
+        .integration-section { border-color: #FF5722; }
+        .integration-sub { border-color: #FF9800; }
+        
+        /* Colores de clase */
+        .resource-manager { border-color: #2196F3; color: #2196F3; }
+        .jira-client { border-color: #FF5722; color: #FF5722; }
+        .xray-client { border-color: #9C27B0; color: #9C27B0; }
+        .scenario-generator { border-color: #E91E63; color: #E91E63; }
+        .tests-generator { border-color: #4CAF50; color: #4CAF50; }
+    </style>
+</head>
+<body>
+    <h1>Diagrama de Flujo del Proceso de Generación de Tests</h1>
+    
+    <div class="diagram-container">
+        <h2>Clases principales</h2>
+        <div class="classes-container flex-row">
+            <div class="class-box resource-manager">
+                <div class="class-title">ResourceManager</div>
+                <div class="class-description">
+                    <p>Gestiona la carga de recursos externos como ejemplos de Gherkin y esquemas OpenAPI.</p>
+                    <ul>
+                        <li>Carga de ejemplos Gherkin</li>
+                        <li>Carga de esquemas JSON/YAML</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="class-box jira-client">
+                <div class="class-title">JiraClient</div>
+                <div class="class-description">
+                    <p>Cliente para interactuar con la API de Jira.</p>
+                    <ul>
+                        <li>Obtención de tareas</li>
+                        <li>Vinculación de tests a tareas</li>
+                        <li>Gestión de autenticación</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="class-box xray-client">
+                <div class="class-title">XrayClient</div>
+                <div class="class-description">
+                    <p>Cliente para interactuar con la API de Xray.</p>
+                    <ul>
+                        <li>Creación de tests</li>
+                        <li>Monitorización de jobs</li>
+                        <li>Gestión de tokens</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="class-box scenario-generator">
+                <div class="class-title">ScenarioGenerator</div>
+                <div class="class-description">
+                    <p>Genera escenarios Gherkin utilizando IA.</p>
+                    <ul>
+                        <li>Identificación de componentes</li>
+                        <li>Selección de ejemplos relevantes</li>
+                        <li>Generación con IA en Ollama</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="class-box tests-generator">
+                <div class="class-title">TestsGenerator</div>
+                <div class="class-description">
+                    <p>Clase principal que coordina el proceso completo.</p>
+                    <ul>
+                        <li>Orquestación del flujo completo</li>
+                        <li>Procesamiento en paralelo</li>
+                        <li>Gestión de errores</li>
+                        <li>Log con resultados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inicio -->
+        <div class="node start-node">
+            <div class="class-label tests-generator">TestsGenerator</div>
+            <div class="node-title">
+                <span class="icon" style="background-color: #4CAF50;">✓</span>
+                Inicio
+            </div>
+            Inicio del script (función main → TestsGenerator.run())
+        </div>
+        
+        <div class="arrow">Inicialización</div>
+        
+        <!-- Inicialización y Carga -->
+        <div class="flex-row">
+            <div class="node config-node" style="width: 45%;">
+                <div class="class-label resource-manager">ResourceManager</div>
+                <div class="node-title">
+                    <span class="icon" style="background-color: #607D8B;">⚙</span>
+                    Carga de Recursos
+                </div>
+                <ul>
+                    <li>Carga ejemplos Gherkin (load_gherkin_examples)</li>
+                    <li>Carga schemas OpenAPI (get_openapi_*_schema)</li>
+                </ul>
+            </div>
+            
+            <div class="node config-node" style="width: 45%;">
+                <div class="class-label tests-generator">TestsGenerator</div>
+                <div class="node-title">
+                    <span class="icon" style="background-color: #607D8B;">⚡</span>
+                    Inicialización de Clientes
+                </div>
+                <ul>
+                    <li>Inicialización de JiraClient</li>
+                    <li>Inicialización de XrayClient</li>
+                    <li>Inicialización de ScenarioGenerator</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="arrow">Obtención de tareas</div>
+        
+        <!-- Obtención de Tareas -->
+        <div class="node task-node">
+            <div class="class-label jira-client">JiraClient</div>
+            <div class="node-title">
+                <span class="icon" style="background-color: #FF9800;">📋</span>
+                Obtención de Tareas
+            </div>
+            <ul>
+                <li>Método JiraClient.get_sprint_tasks()</li>
+                <li>Consulta a Jira vía API usando JQL</li>
+                <li>project = "LOM" AND Sprint in openSprints() AND labels = "taskWithCucumberTests"</li>
+            </ul>
+        </div>
+        
+        <div class="arrow">Lista de tareas</div>
+        
+        <!-- Generación de Escenarios -->
+        <div class="flow-section process-section">
+            <div class="flow-section-title">Generación de Escenarios Gherkin (_generate_scenarios)</div>
+            
+            <div class="node" style="border-color: #3F51B5;">
+                <div class="class-label tests-generator">TestsGenerator</div>
+                <div class="node-title">
+                    <span class="icon" style="background-color: #3F51B5;">🔄</span>
+                    Procesamiento Paralelo
+                </div>
+                <ul>
+                    <li>ThreadPoolExecutor con workers configurables</li>
+                    <li>Distribución de tareas para procesamiento</li>
+                </ul>
+            </div>
+            
+            <div class="arrow">Para cada tarea</div>
+            
+            <div class="sub-process">
+                <div class="sub-process-title">Proceso por cada tarea</div>
+                
+                <div class="flex-row">
+                    <div class="node component-node" style="width: 45%;">
+                        <div class="class-label scenario-generator">ScenarioGenerator</div>
+                        <div class="node-title">
+                            <span class="icon" style="background-color: #9C27B0;">🏷️</span>
+                            Identificación de Componente
+                        </div>
+                        <ul>
+                            <li>Método identify_component()</li>
+                            <li>Detección: lookup-rest-api, serrea, lomana, mason</li>
+                            <li>Análisis de palabras clave en descripción</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="node component-node" style="width: 45%;">
+                        <div class="class-label scenario-generator">ScenarioGenerator</div>
+                        <div class="node-title">
+                            <span class="icon" style="background-color: #9C27B0;">📄</span>
+                            Selección de Ejemplos
+                        </div>
+                        <ul>
+                            <li>Método get_relevant_examples()</li>
+                            <li>Selección basada en componente</li>
+                            <li>Uso de ejemplos de ResourceManager</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="arrow"></div>
+                
+                <div class="node ai-node">
+                    <div class="class-label scenario-generator">ScenarioGenerator</div>
+                    <div class="node-title">
+                        <span class="icon" style="background-color: #E91E63;">🧠</span>
+                        Generación con IA
+                    </div>
+                    <ul>
+                        <li>Método generate_gherkin()</li>
+                        <li>Preparación del prompt con contexto y ejemplos</li>
+                        <li>Llamada a Ollama con modelo IA</li>
+                        <li>Procesamiento y limpieza de respuesta</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="arrow">Escenarios generados</div>
+        </div>
+        
+        <!-- Creación y Vinculación de Tests -->
+        <div class="flow-section integration-section">
+            <div class="flow-section-title">Creación y Vinculación de Tests (_process_xray_tests)</div>
+            
+            <div class="node" style="border-color: #FF5722;">
+                <div class="class-label tests-generator">TestsGenerator</div>
+                <div class="node-title">
+                    <span class="icon" style="background-color: #FF5722;">📦</span>
+                    Procesamiento en Lotes
+                </div>
+                <ul>
+                    <li>División en lotes (BATCH_SIZE configurable)</li>
+                    <li>Gestión de reintentos y fallos</li>
+                    <li>Pausas entre lotes para rate-limits</li>
+                </ul>
+            </div>
+            
+            <div class="arrow">Para cada lote</div>
+            
+            <div class="flex-row">
+                <div class="sub-process" style="width: 45%;">
+                    <div class="sub-process-title">Creación Tests en Xray</div>
+                    <div class="node integration-sub">
+                        <div class="class-label xray-client">XrayClient</div>
+                        <div class="node-title">
+                            <span class="icon" style="background-color: #FF9800;">📝</span>
+                            Creación Test en Xray
+                        </div>
+                        <ul>
+                            <li>Método XrayClient.create_test()</li>
+                            <li>Monitoreo del estado del Job</li>
+                            <li>Reintentos automáticos si falla</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="sub-process" style="width: 45%;">
+                    <div class="sub-process-title">Vinculación Tests con Tareas</div>
+                    <div class="node integration-sub">
+                        <div class="class-label jira-client">JiraClient</div>
+                        <div class="node-title">
+                            <span class="icon" style="background-color: #FF9800;">🔗</span>
+                            Vinculación en Jira
+                        </div>
+                        <ul>
+                            <li>Método JiraClient.link_test_to_task()</li>
+                            <li>Creación de enlaces "Test" en Jira</li>
+                            <li>Reintentos automáticos si falla</li>
+                            <li>Gestión de errores por rate limits</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="arrow">Final del proceso</div>
+        
+        <!-- Resumen de Ejecución -->
+        <div class="node start-node">
+            <div class="class-label tests-generator">TestsGenerator</div>
+            <div class="node-title">
+                <span class="icon" style="background-color: #4CAF50;">📊</span>
+                Resumen de Ejecución
+            </div>
+            <ul>
+                <li>Método _show_summary()</li>
+                <li>Cálculo de tiempo total de ejecución</li>
+                <li>Conteo de solicitudes realizadas a Jira</li>
+                <li>Estadísticas de éxitos/fallos</li>
+            </ul>
+        </div>
+        
+        <!-- Leyenda -->
+        <div class="legend">
+            <h3>Leyenda:</h3>
+            <div style="margin-bottom: 10px;">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2196F3;"></div>
+                    <span>ResourceManager</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FF5722;"></div>
+                    <span>JiraClient</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #9C27B0;"></div>
+                    <span>XrayClient</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #E91E63;"></div>
+                    <span>ScenarioGenerator</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4CAF50;"></div>
+                    <span>TestsGenerator</span>
+                </div>
+            </div>
+            
+            <div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3F51B5;"></div>
+                    <span>Procesamiento Paralelo</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #673AB7;"></div>
+                    <span>Integración con APIs</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #607D8B;"></div>
+                    <span>Configuración y Recursos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

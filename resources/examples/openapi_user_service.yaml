@@ -1,0 +1,280 @@
+openapi: 3.0.3
+info:
+  title: User Service API
+  description: RESTful API for user management, authentication, and profile operations
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: api-support@example.com
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+
+paths:
+  /users:
+    post:
+      summary: Create a new user account
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request data
+        '409':
+          description: User already exists
+
+    get:
+      summary: List users with pagination
+      tags: [Users]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      tags: [Users]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      summary: Update user profile
+      tags: [Users]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+    delete:
+      summary: Delete user account
+      tags: [Users]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+
+  /auth/login:
+    post:
+      summary: Authenticate user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Logout successful
+
+  /users/{userId}/profile:
+    get:
+      summary: Get user profile
+      tags: [Profile]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "user_123"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        username:
+          type: string
+          example: "johndoe123"
+        status:
+          type: string
+          enum: [active, inactive, suspended]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateUserRequest:
+      type: object
+      required: [name, email, username, password]
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        username:
+          type: string
+          example: "johndoe123"
+        password:
+          type: string
+          format: password
+          example: "SecurePass123!"
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        bio:
+          type: string
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: "Bearer"
+        expires_in:
+          type: integer
+          example: 3600
+        user:
+          $ref: '#/components/schemas/User'
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        bio:
+          type: string
+        avatar_url:
+          type: string
+        preferences:
+          type: object
+
+    UserList:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total_count:
+              type: integer
+            total_pages:
+              type: integer
