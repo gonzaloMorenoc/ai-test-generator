@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class AITestGenerator:
-    """Clase principal que coordina el proceso de generación de escenarios"""
+    """Main class that coordinates the scenario generation process"""
     
     def __init__(self, config_override: Optional[Dict] = None):
         """Initialize the AI Test Generator
@@ -75,7 +75,7 @@ class AITestGenerator:
         logger.info("✅ Configuration validation completed")
     
     def run(self, jql_query: Optional[str] = None) -> Dict:
-        """Ejecuta el proceso completo de generación de tests y su integración con Jira/Xray
+        """Executes the complete test generation process and its integration with Jira/Xray
         
         Args:
             jql_query: Optional custom JQL query to override settings
@@ -119,18 +119,18 @@ class AITestGenerator:
             return {"success": False, "error": str(e)}
     
     def _get_tasks(self, jql_query: Optional[str] = None) -> List[Dict]:
-        """Obtiene las tareas de Jira usando el cliente de Jira"""
+        """Gets tasks from Jira using the Jira client"""
         query = jql_query or self.settings.jql_query
         logger.info(f"📋 Retrieving tasks from Jira using query: {query}")
         return self.jira_client.get_sprint_tasks(query)
     
     def _generate_scenarios(self, tasks: List[Dict]) -> Dict[str, str]:
-        """Genera escenarios para las tareas proporcionadas utilizando IA"""
+        """Generates scenarios for the provided tasks using AI"""
         logger.info(f"🧠 Generating scenarios for {len(tasks)} tasks...")
         generated_tests = {}
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.settings.max_worker_threads) as executor:
-            # Preparar argumentos para cada tarea
+            # Prepare arguments for each task
             futures = {}
             for task in tasks:
                 key = task.get("key", "N/A")
@@ -139,14 +139,14 @@ class AITestGenerator:
                     future = executor.submit(self.scenario_generator.generate_gherkin, user_story)
                     futures[future] = key
             
-            # Procesar resultados a medida que se completan
+            # Process results as they complete
             for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Generating scenarios"):
                 key = futures[future]
                 try:
                     scenario = future.result()
                     generated_tests[key] = scenario
                     
-                    # Mostrar resultado
+                    # Show result
                     logger.info("\n" + "=" * 50)
                     logger.info(f"📝 Generated scenario for {key}:")
                     logger.info("-" * 50)
@@ -158,11 +158,11 @@ class AITestGenerator:
         return generated_tests
     
     def _process_xray_tests(self, generated_tests: Dict[str, str]) -> Dict:
-        """Crea pruebas Xray y las vincula a las tareas de Jira"""
+        """Creates Xray tests and links them to Jira tasks"""
         created_xray_links = {}
         failed_creations = []
         
-        # Dividir en lotes para procesamiento más eficiente
+        # Split into batches for more efficient processing
         task_batches = [list(generated_tests.items())[i:i+self.settings.batch_size] 
                         for i in range(0, len(generated_tests), self.settings.batch_size)]
         
@@ -173,7 +173,7 @@ class AITestGenerator:
             batch_results = {}
             batch_failures = []
             
-            # Procesar cada tarea en el lote
+            # Process each task in the batch
             for task_key, scenario in batch:
                 test_name = f"Test for {task_key}"
                 test_key = self.xray_client.create_test(test_name, scenario)
@@ -183,16 +183,16 @@ class AITestGenerator:
                 else:
                     batch_failures.append((task_key, scenario))
             
-            # Pausa entre lotes para evitar rate limits
+            # Pause between batches to avoid rate limits
             if batch_idx < len(task_batches) - 1:
                 logger.info(f"⏸️ Pausing between batches (5s)...")
                 time.sleep(5)
             
-            # Actualizar resultados globales
+            # Update global results
             created_xray_links.update(batch_results)
             failed_creations.extend(batch_failures)
         
-        # Intentar crear de nuevo los tests fallidos (una vez más)
+        # Retry creating failed tests (one more time)
         if failed_creations:
             logger.info(f"\n⚠️ Retrying {len(failed_creations)} failed test creations...")
             for task_key, scenario in failed_creations:
@@ -201,7 +201,7 @@ class AITestGenerator:
                 if test_key:
                     created_xray_links[task_key] = test_key
         
-        # Enlazar tests con tareas de Jira
+        # Link tests with Jira tasks
         successful_links = self._link_xray_tests(created_xray_links)
         
         return {
@@ -210,7 +210,7 @@ class AITestGenerator:
         }
     
     def _link_xray_tests(self, created_xray_links: Dict[str, str]) -> int:
-        """Enlaza las pruebas Xray creadas con las tareas de Jira"""
+        """Links the created Xray tests with Jira tasks"""
         if not created_xray_links:
             logger.warning("⚠️ No Xray tests to link")
             return 0
@@ -225,7 +225,7 @@ class AITestGenerator:
             else:
                 failed_links.append((task_key, test_key))
         
-        # Reintentar enlaces fallidos
+        # Retry failed links
         if failed_links:
             logger.info(f"\n⚠️ Retrying {len(failed_links)} failed links...")
             for task_key, test_key in failed_links:
@@ -235,7 +235,7 @@ class AITestGenerator:
         return successful_links
     
     def _show_summary(self) -> Dict:
-        """Muestra un resumen de la ejecución"""
+        """Shows an execution summary"""
         end_time = time.time()
         elapsed_time = end_time - self.start_time
         
@@ -257,9 +257,9 @@ class AITestGenerator:
 
 
 def main():
-    """Función principal para ejecutar desde línea de comandos"""
+    """Main function to execute from command line"""
     try:
-        # Ejecutar el generador de pruebas
+        # Execute the test generator
         generator = AITestGenerator()
         result = generator.run()
         

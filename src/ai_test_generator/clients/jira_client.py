@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class JiraClient:
-    """Cliente para interactuar con la API de Jira"""
+    """Client for interacting with Jira API"""
     
     def __init__(self):
         self.settings = get_settings()
@@ -28,7 +28,7 @@ class JiraClient:
         self.request_count = 0
     
     def get_sprint_tasks(self, jql: Optional[str] = None, max_retries: int = 3) -> List[Dict]:
-        """Recupera historias de usuario y tareas del sprint actual en Jira"""
+        """Retrieves user stories and tasks from current sprint in Jira"""
         query = jql or self.settings.jql_query
         url = f"{self.settings.jira_url}/rest/api/3/search"
         params = {"jql": query, "maxResults": 50}
@@ -50,7 +50,7 @@ class JiraClient:
                 else:
                     logger.warning(f"Error retrieving sprint tasks: {response.status_code}. Attempt {attempt} of {max_retries}")
                     if attempt < max_retries:
-                        time.sleep(2 ** attempt)  # Backoff exponencial
+                        time.sleep(2 ** attempt)  # Exponential backoff
             except Exception as e:
                 logger.error(f"Exception retrieving sprint tasks: {e}")
                 if attempt < max_retries:
@@ -60,7 +60,7 @@ class JiraClient:
         return []
     
     def link_test_to_task(self, task_key: str, test_key: str, max_retries: int = 3, backoff_factor: float = 1.5) -> bool:
-        """Crea un enlace en Jira con lógica de reintentos robusta"""
+        """Creates a link in Jira with robust retry logic"""
         url = f"{self.settings.jira_url}/rest/api/3/issueLink"
         headers = {
             "Content-Type": "application/json",
@@ -90,7 +90,7 @@ class JiraClient:
                 else:
                     logger.warning(f"⚠️ Error linking: {response.status_code} - {response.text}")
                     
-                    # Espera exponencial entre reintentos
+                    # Exponential wait between retries
                     if attempt < max_retries:
                         wait_time = backoff_factor ** attempt
                         logger.info(f"Waiting {wait_time:.2f}s before retry...")
@@ -107,7 +107,7 @@ class JiraClient:
         return False
     
     def get_issue(self, issue_key: str) -> Optional[Dict]:
-        """Obtiene información detallada de una issue específica"""
+        """Gets detailed information about a specific issue"""
         url = f"{self.settings.jira_url}/rest/api/3/issue/{issue_key}"
         
         try:
@@ -129,5 +129,5 @@ class JiraClient:
             return None
     
     def get_request_count(self) -> int:
-        """Retorna el número de requests realizados"""
+        """Returns the number of requests made"""
         return self.request_count

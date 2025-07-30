@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class ResourceManager:
-    """Gestiona la carga de recursos externos como ejemplos y esquemas OpenAPI"""
+    """Manages loading of external resources like examples and OpenAPI schemas"""
     
     def __init__(self):
         self.settings = get_settings()
@@ -23,11 +23,11 @@ class ResourceManager:
         self._openapi_order_service_schema: Optional[dict] = None
         self._gherkin_examples: Optional[str] = None
         
-        # Crear directorio cache si no existe
+        # Create cache directory if it doesn't exist
         os.makedirs(self.settings.cache_dir, exist_ok=True)
     
     def load_gherkin_examples(self) -> str:
-        """Carga ejemplos de escenarios Gherkin desde un archivo"""
+        """Loads Gherkin scenario examples from a file"""
         if self._gherkin_examples is not None:
             return self._gherkin_examples
             
@@ -44,7 +44,7 @@ class ResourceManager:
             return self._get_default_gherkin_example()
     
     def _get_default_gherkin_example(self) -> str:
-        """Retorna un ejemplo Gherkin por defecto si no se puede cargar el archivo"""
+        """Returns a default Gherkin example if the file cannot be loaded"""
         return '''Example of a simple scenario:
             @TEST_DEMO-001
             Scenario: @test=DEMO-001 Create new user account
@@ -58,21 +58,21 @@ class ResourceManager:
             '''
     
     def get_openapi_user_service_schema(self) -> Dict:
-        """Carga el esquema OpenAPI para User Service de forma thread-safe"""
+        """Loads OpenAPI schema for User Service in a thread-safe manner"""
         with self._openapi_lock:
             if self._openapi_user_service_schema is None:
                 self._openapi_user_service_schema = self._load_openapi_schema(self.settings.openapi_user_service_file)
             return self._openapi_user_service_schema
     
     def get_openapi_order_service_schema(self) -> Dict:
-        """Carga el esquema OpenAPI para Order Service de forma thread-safe"""
+        """Loads OpenAPI schema for Order Service in a thread-safe manner"""
         with self._openapi_lock:
             if self._openapi_order_service_schema is None:
                 self._openapi_order_service_schema = self._load_openapi_schema(self.settings.openapi_order_service_file)
             return self._openapi_order_service_schema
     
     def _load_openapi_schema(self, file_path: str) -> Dict:
-        """Carga un esquema OpenAPI desde un archivo YAML"""
+        """Loads an OpenAPI schema from a YAML file"""
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 schema = yaml.safe_load(file)
@@ -86,7 +86,7 @@ class ResourceManager:
             return {}
     
     def clear_cache(self) -> None:
-        """Limpia el cache de recursos cargados"""
+        """Clears the loaded resources cache"""
         self._openapi_user_service_schema = None
         self._openapi_order_service_schema = None
         self._gherkin_examples = None

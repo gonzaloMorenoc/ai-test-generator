@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class XrayClient:
-    """Cliente para interactuar con la API de Xray"""
+    """Client for interacting with Xray API"""
     
     def __init__(self):
         self.settings = get_settings()
@@ -22,12 +22,12 @@ class XrayClient:
         self._ensure_token()
     
     def _ensure_token(self):
-        """Asegura que tenemos un token válido, obteniendo uno nuevo si es necesario"""
+        """Ensures we have a valid token, obtaining a new one if necessary"""
         if self._token is None:
             self._token = self._get_token()
     
     def _get_token(self, max_retries: int = 3) -> Optional[str]:
-        """Obtiene un token de autenticación de Xray Cloud"""
+        """Obtains an authentication token from Xray Cloud"""
         headers = {"Content-Type": "application/json"}
         data = json.dumps({
             "client_id": self.settings.xray_jira_client_id,
@@ -59,7 +59,7 @@ class XrayClient:
         return None
     
     def refresh_token(self) -> bool:
-        """Refresca el token de Xray"""
+        """Refreshes the Xray token"""
         new_token = self._get_token()
         if new_token:
             self._token = new_token
@@ -67,7 +67,7 @@ class XrayClient:
         return False
     
     def get_job_status(self, job_id: str, max_retries: int = 3) -> Optional[Dict]:
-        """Recupera el estado de un trabajo desde Xray Cloud con mejor manejo de errores"""
+        """Retrieves job status from Xray Cloud with improved error handling"""
         self._ensure_token()
         
         url = f"{self.settings.xray_base_url}/import/test/bulk/{job_id}/status"
@@ -89,7 +89,7 @@ class XrayClient:
                 elif response.status_code in (401, 403):
                     logger.warning(f"Authentication error checking job status. Refreshing token...")
                     if self.refresh_token() and attempt < max_retries:
-                        # Actualizar headers con nuevo token y continuar
+                        # Update headers with new token and continue
                         headers["Authorization"] = f"Bearer {self._token}"
                         continue
                 else:
@@ -98,9 +98,9 @@ class XrayClient:
             except Exception as e:
                 logger.error(f"Exception retrieving job status: {e}")
             
-            # Solo esperar si vamos a hacer otro intento
+            # Only wait if we're going to make another attempt
             if attempt < max_retries:
-                wait_time = 2 ** attempt  # Backoff exponencial: 2s, 4s, 8s, ...
+                wait_time = 2 ** attempt  # Exponential backoff: 2s, 4s, 8s, ...
                 logger.info(f"Waiting {wait_time}s before retry...")
                 time.sleep(wait_time)
         
@@ -108,7 +108,7 @@ class XrayClient:
         return None
     
     def create_test(self, test_name: str, scenario: str, max_retries: int = 3, backoff_factor: float = 1.5) -> Optional[str]:
-        """Crea un test en Xray con lógica de reintentos robusta y mejor manejo de errores"""
+        """Creates a test in Xray with robust retry logic and improved error handling"""
         self._ensure_token()
         
         url = f"{self.settings.xray_base_url}/import/test/bulk"
@@ -130,7 +130,7 @@ class XrayClient:
             try:
                 logger.info(f"Creating test '{test_name}' (attempt {attempt}/{max_retries})...")
                 
-                # Añadir timeout para evitar bloqueos
+                # Add timeout to avoid blocking
                 response = requests.post(
                     url, 
                     headers=headers, 
@@ -144,9 +144,9 @@ class XrayClient:
                         job_id = result["jobId"]
                         logger.info(f"Test issue creation initiated. JobId: {job_id}")
                         
-                        # Esperar con backoff exponencial y mostrar progreso
+                        # Wait with exponential backoff and show progress
                         wait_time = 5  # Segundos iniciales
-                        for check_attempt in range(1, 4):  # Máximo 3 intentos de verificación
+                        for check_attempt in range(1, 4):  # Maximum 3 verification attempts
                             logger.info(f"Waiting {wait_time}s before checking job status...")
                             time.sleep(wait_time)
                             
@@ -158,7 +158,7 @@ class XrayClient:
                                     logger.info(f"✅ Test issue created successfully with key: {test_key}")
                                     return test_key
                             
-                            # Espera exponencial para el siguiente intento
+                            # Exponential wait for next attempt
                             wait_time = int(wait_time * backoff_factor)
                         
                         logger.warning(f"⚠️ Test creation still pending after multiple checks. JobId: {job_id}")
@@ -166,16 +166,16 @@ class XrayClient:
                     else:
                         logger.warning(f"⚠️ No jobId returned. Response: {result}")
                 else:
-                    # Si es error 401/403, posiblemente expiró el token
+                    # If 401/403 error, token possibly expired
                     if response.status_code in (401, 403):
                         logger.warning("⚠️ Authentication error. Refreshing Xray token...")
                         self.refresh_token()
-                        # Actualizar headers
+                        # Update headers
                         headers["Authorization"] = f"Bearer {self._token}"
                     else:
                         logger.warning(f"⚠️ Error: {response.status_code} - {response.text}")
                     
-                    # Espera exponencial entre reintentos
+                    # Exponential wait between retries
                     if attempt < max_retries:
                         wait_time = backoff_factor ** attempt
                         logger.info(f"Waiting {wait_time:.2f}s before retry...")
@@ -192,11 +192,11 @@ class XrayClient:
         return None
     
     def is_token_valid(self) -> bool:
-        """Verifica si el token actual es válido"""
+        """Verifies if the current token is valid"""
         if not self._token:
             return False
         
-        # Realizar una prueba simple para verificar el token
+        # Perform a simple test to verify the token
         url = f"{self.settings.xray_base_url}/tests"
         headers = {
             "Accept": "application/json",
