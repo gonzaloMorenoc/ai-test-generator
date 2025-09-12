@@ -1,6 +1,6 @@
 # AI Test Generator
 
-🤖 **Automated Gherkin scenario generation using artificial intelligence**
+**Automated Gherkin scenario generation using artificial intelligence**
 
 An intelligent test automation tool that generates Gherkin scenarios for your Jira tasks using AI, then creates and links them automatically in Xray for seamless test management.
 
@@ -8,18 +8,18 @@ An intelligent test automation tool that generates Gherkin scenarios for your Ji
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## 🌟 Features
+## Features
 
-- **🧠 AI-Powered Generation**: Uses advanced language models (via Ollama) to generate contextual Gherkin scenarios
-- **🔄 Jira Integration**: Automatically fetches tasks from Jira using customizable JQL queries
-- **📝 Xray Integration**: Creates test issues in Xray and links them back to original Jira tasks
-- **⚡ Parallel Processing**: Multi-threaded execution for faster scenario generation
-- **💾 Smart Caching**: Caches generated scenarios to avoid redundant AI calls
-- **🎯 Component Detection**: Intelligently identifies API components and generates relevant test scenarios
-- **📊 Comprehensive Logging**: Detailed logging with configurable levels and file output
-- **🔧 Highly Configurable**: Extensive configuration options via environment variables
+- **AI-Powered Generation**: Uses advanced language models (via Ollama) to generate contextual Gherkin scenarios
+- **Jira Integration**: Automatically fetches tasks from Jira using customizable JQL queries
+- **Xray Integration**: Creates test issues in Xray and links them back to original Jira tasks
+- **Parallel Processing**: Multi-threaded execution for faster scenario generation
+- **Smart Caching**: Caches generated scenarios to avoid redundant AI calls
+- **Component Detection**: Intelligently identifies API components and generates relevant test scenarios
+- **Comprehensive Logging**: Detailed logging with configurable levels and file output
+- **Highly Configurable**: Extensive configuration options via environment variables
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -61,7 +61,7 @@ An intelligent test automation tool that generates Gherkin scenarios for your Ji
    python -m src.ai_test_generator.main
    ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -97,7 +97,7 @@ JQL_QUERY=project = "{project_key}" AND Sprint in openSprints() AND labels = "au
 2. Create new API key pair
 3. Copy Client ID and Client Secret to your `.env`
 
-## 📖 Usage
+## Usage
 
 ### Basic Usage
 
@@ -133,7 +133,7 @@ scenario = scenario_generator.generate_gherkin(
 print(scenario)
 ```
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 ai-test-generator/
@@ -152,7 +152,7 @@ ai-test-generator/
 └── scripts/                         # Setup and demo scripts
 ```
 
-## 🤖 AI Models
+## AI Models
 
 The tool supports various AI models through Ollama:
 
@@ -174,7 +174,7 @@ ollama pull deepseek-r1:14b
 ollama list
 ```
 
-## 📝 Example Output
+## Example Output
 
 The tool generates comprehensive Gherkin scenarios like this:
 
@@ -195,7 +195,7 @@ Scenario: @test=DEMO-001 Create new user account via REST API
   And json path "created_at" exists
 ```
 
-## 🔧 Advanced Configuration
+## Advanced Configuration
 
 ### Custom Component Detection
 
@@ -224,7 +224,7 @@ deleted = cache.cleanup_old_files(max_age_hours=24)
 print(f"Deleted {deleted} old files")
 ```
 
-## 🧪 Testing
+## Testing
 
 Run the test suite:
 
@@ -239,18 +239,18 @@ pytest --cov=src/ai_test_generator
 pytest tests/test_scenario_generator.py -v
 ```
 
-## 📊 Monitoring and Logging
+## Monitoring and Logging
 
 The tool provides comprehensive logging:
 
 ```
-2024-01-15 10:30:15 - ai_test_generator.AITestGenerator - INFO - 🚀 Starting AI test generation process...
-2024-01-15 10:30:16 - ai_test_generator.JiraClient - INFO - ✅ Retrieved 5 tasks from Jira
-2024-01-15 10:30:45 - ai_test_generator.ScenarioGenerator - INFO - 📝 Generated scenario for DEMO-123
-2024-01-15 10:31:20 - ai_test_generator.XrayClient - INFO - ✅ Created test DEMO-T001 for task DEMO-123
+2024-01-15 10:30:15 - ai_test_generator.AITestGenerator - INFO - Starting AI test generation process...
+2024-01-15 10:30:16 - ai_test_generator.JiraClient - INFO - Retrieved 5 tasks from Jira
+2024-01-15 10:30:45 - ai_test_generator.ScenarioGenerator - INFO - Generated scenario for DEMO-123
+2024-01-15 10:31:20 - ai_test_generator.XrayClient - INFO - Created test DEMO-T001 for task DEMO-123
 ```
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -276,14 +276,14 @@ pytest
 black src/ tests/
 ```
 
-## 📚 Documentation
+## Documentation
 
 - [Installation Guide](docs/installation.md)
 - [Configuration Reference](docs/configuration.md)
 - [Usage Examples](docs/usage.md)
 - [API Reference](docs/api_reference.md)
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -306,22 +306,6 @@ ollama serve
 - Check if your Jira project has Xray enabled
 - Ensure sufficient Xray Cloud quota
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Ollama](https://ollama.ai/) for local AI model hosting
-- [Atlassian](https://www.atlassian.com/) for Jira and Xray APIs
-- [OpenAI](https://openai.com/) for inspiring AI-powered development tools
-
-## 📞 Support
-
-- Create an [Issue](https://github.com/yourusername/ai-test-generator/issues) for bug reports
-- Start a [Discussion](https://github.com/yourusername/ai-test-generator/discussions) for questions
-- Check the [Wiki](https://github.com/yourusername/ai-test-generator/wiki) for additional resources
-
----
-
-**Made with ❤️ for the QA community**
