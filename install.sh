@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Configuration
 PYTHON_MIN_VERSION="3.8"
 PROJECT_NAME="ai-test-generator"
-REPO_URL="https://github.com/yourusername/ai-test-generator.git"
+REPO_URL="https://github.com/gonzaloMorenoc/ai-test-generator.git"
 
 # Print colored output
 print_color() {
@@ -292,8 +292,8 @@ print_final_instructions() {
     echo "   - Check style: flake8 src/ tests/"
     echo ""
     echo "❓ Need help?"
-    echo "   - GitHub Issues: https://github.com/yourusername/ai-test-generator/issues"
-    echo "   - Documentation: https://github.com/yourusername/ai-test-generator/wiki"
+    echo "   - GitHub Issues: https://github.com/gonzaloMorenoc/ai-test-generator/issues"
+    echo "   - Documentation: https://github.com/gonzaloMorenoc/ai-test-generator#readme"
     echo ""
 }
 

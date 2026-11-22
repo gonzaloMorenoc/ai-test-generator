@@ -32,7 +32,7 @@ An intelligent test automation tool that generates Gherkin scenarios for your Ji
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/ai-test-generator.git
+   git clone https://github.com/gonzaloMorenoc/ai-test-generator.git
    cd ai-test-generator
    ```
 
@@ -262,7 +262,7 @@ The tool provides comprehensive logging:
 
 ```bash
 # Clone and install in development mode
-git clone https://github.com/yourusername/ai-test-generator.git
+git clone https://github.com/gonzaloMorenoc/ai-test-generator.git
 cd ai-test-generator
 pip install -e .
 
